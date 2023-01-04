@@ -31,6 +31,8 @@ class PowCommand extends HyperfCommand
     // 启动时间
     protected int $startTime = 0;
 
+    protected int $batch = 10;
+
     public function __construct(protected ContainerInterface $container)
     {
         parent::__construct('pow');
@@ -47,6 +49,7 @@ class PowCommand extends HyperfCommand
         $this->addArgument('oscId', InputArgument::REQUIRED, 'OSC ID');
         $this->addArgument('cookieOscId', InputArgument::REQUIRED, 'Cookie OSC ID');
         $this->addArgument('projectId', InputArgument::OPTIONAL, 'Project ID', '49127');
+        $this->addOption('batch', 'b', InputArgument::OPTIONAL, 'Batch', 10);
     }
 
     public function handle()
@@ -55,7 +58,8 @@ class PowCommand extends HyperfCommand
         $this->cookieOscId = str_replace(' ', '%', $cookieOscId);
         $oscId = $this->input->getArgument('oscId');
         $projectId = $this->input->getArgument('projectId');
-        $this->logger->info(sprintf('开始运行 PoW 程序 project id: %s user id: %s cookieOscId: %s', $projectId, $oscId, $this->cookieOscId));
+        $this->batch = (int)$this->input->getOption('batch');
+        $this->logger->info(sprintf('开始运行 PoW 程序 Batch: %d project id: %s user id: %s cookieOscId: %s', $this->batch, $projectId, $oscId, $this->cookieOscId));
         $this->createSendPowChannel();
         $this->find($projectId, $oscId);
     }
@@ -98,7 +102,7 @@ class PowCommand extends HyperfCommand
                 try {
                     $payload = $this->channel->pop();
                     $payloads[] = $payload;
-                    if (count($payloads) >= 10) {
+                    if (count($payloads) >= $this->batch) {
                         $sendPayloads = $payloads;
                         $payloads = [];
                         $this->send($sendPayloads);
