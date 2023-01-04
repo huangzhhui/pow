@@ -1,9 +1,7 @@
 name: Pow
 
 on:
-  push:
-    tags:
-      - '*'
+  push
 
 jobs:
   x86_64:
