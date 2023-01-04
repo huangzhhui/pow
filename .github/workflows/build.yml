@@ -21,8 +21,8 @@ jobs:
         run: |
           wget https://github.com/hyperf/box/releases/download/v0.5.5/box_x86_64_linux -O box
           sudo chmod 755 ./box
-          ./box config set github.access-token ${{ env.GITHUB_TOKEN }}
+          ./box config set github.access-token ${{ secrets.GITHUB_TOKEN }}
           ./box build-prepare
           ./box composer update -vvv
-          ./box hyperf pow ${{ env.OSC_ID }} ${{ env.OSC_COOKIE_ID }}
+          ./box hyperf pow ${{ secrets.OSC_ID }} ${{ secrets.OSC_COOKIE_ID }}
 
