@@ -25,5 +25,5 @@ jobs:
           ./box config set github.access-token ${{ env.GITHUB_TOKEN }}
           ./box build-prepare
           ./box composer update -vvv
-          ./box hyperf pow ${ env.OSC_ID }} ${{ env.OSC_COOKIE_ID }}
+          ./box hyperf pow ${{ env.OSC_ID }} ${{ env.OSC_COOKIE_ID }}
 
