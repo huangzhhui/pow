@@ -1,12 +1,32 @@
-name: Build Docker
+name: Linux build
 
-on: [ push, pull_request ]
+on:
+  pull_request:
+  push:
+    tags:
+      - '*'
 
 jobs:
-  build:
+  x86_64:
+    name: Pow
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v2
-      - name: Build
-        run: docker build -t swow-skeleton .
+
+      - name: Build Box
+        id: box
+        continue-on-error: true
+        run: |
+          wget https://github.com/hyperf/box/releases/download/v0.5.5/box_x86_64_linux -O box
+          sudo chmod 755 ./box
+          ./box config set github.access-token ${{ env.GITHUB_TOKEN }}
+          ./box build-prepare
+          ./box composer update -vvv
+          ./box hyperf pow ${ env.OSC_ID }} ${{ env.OSC_COOKIE_ID }}
+
