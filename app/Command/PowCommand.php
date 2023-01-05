@@ -81,6 +81,7 @@ class PowCommand extends HyperfCommand
                     break;
                 }
             }
+            $this->logger->info('Random Hash: ' . $hash);
             sleep(0);
         }
     }
